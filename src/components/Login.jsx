@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { Button, TextField,Modal, Typography } from '@mui/material';
-import RegisterModal from './RegisterModal';
-import { useNavigate } from "react-router-dom"; 
+import { useNavigate } from 'react-router-dom';
+import { Box, Button, TextField, Modal } from '@mui/material';
+import axios from 'axios';
 import HeaderBar from './HeaderBar';
-import Box from "@mui/material/Box";
+import RegisterModal from './RegisterModal';
+
 const style = {
   position: 'absolute',
   top: '50%',
@@ -18,20 +19,29 @@ const style = {
 
 function Login() {
   const [open, setOpen] = useState(false);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   let navigate = useNavigate();
+
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
-  const handleLogin = () => {
-    navigate("/boards");
-  }
+  const handleLogin = async () => {
+    try {
+      const response = await axios.post('http://localhost:8080/auth/login', { email, senha: password });
+      localStorage.setItem('token', response.data.token);
+      navigate('/boards');
+    } catch (error) {
+      console.error('Login failed', error);
+    }
+  };
 
   return (
     <>
-      <HeaderBar/>
+      <HeaderBar />
       <Box display="flex" flexDirection="column" alignItems="center">
-        <TextField label="Email" variant="outlined" margin="normal" />
-        <TextField label="Password" type="password" variant="outlined" margin="normal" />
+        <TextField label="Email" variant="outlined" margin="normal" value={email} onChange={(e) => setEmail(e.target.value)} />
+        <TextField label="Password" type="password" variant="outlined" margin="normal" value={password} onChange={(e) => setPassword(e.target.value)} />
         <Button variant="contained" color="primary" sx={{ mt: 2 }} onClick={handleLogin}>Login</Button>
         <Button variant="outlined" color="secondary" sx={{ mt: 2 }} onClick={handleOpen}>
           Register

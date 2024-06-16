@@ -3,7 +3,7 @@ import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
 
 
-export default function BoardComponent() {
+export default function BoardComponent({name}) {
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
   const isMediumScreen = useMediaQuery(theme.breakpoints.between('sm', 'md'));
@@ -27,7 +27,7 @@ export default function BoardComponent() {
           component="div"
           sx={{ fontSize }}
         >
-          Board
+          {name}
         </Typography>
       </CardContent>
     </Card>
