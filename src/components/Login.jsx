@@ -40,7 +40,6 @@ function Login() {
 
   return (
     <>
-      <HeaderBar />
       <Box display="flex" flexDirection="column" alignItems="center" mt={4}>
         <TextField
           label="Email"
