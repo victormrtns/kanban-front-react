@@ -38,7 +38,7 @@ function Login() {
 
   return (
     <>
-      <HeaderBar />
+      <HeaderBar option='default'/>
       <Box display="flex" flexDirection="column" alignItems="center">
         <TextField label="Email" variant="outlined" margin="normal" value={email} onChange={(e) => setEmail(e.target.value)} />
         <TextField label="Password" type="password" variant="outlined" margin="normal" value={password} onChange={(e) => setPassword(e.target.value)} />
