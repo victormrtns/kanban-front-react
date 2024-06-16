@@ -5,10 +5,8 @@ import BoardComponent from '../components/BoardComponent';
 import HeaderBar from '../components/HeaderBar';
 import RegisterBoard from '../components/RegisterBoard';
 import axios from '../config/axiosConfig';
-import { useEffect, useState } from "react";
 
 function Boards() {
-
   const [boards, setBoards] = useState([]);
   const [open, setOpen] = useState(false);
   const navigate = useNavigate(); // Hook do React Router para navegação
@@ -17,16 +15,25 @@ function Boards() {
     fetchData();
   }, []);
 
-  const fetchData = () => {
-    const response = axios
-    .get('/quadros/email')
-    .then((response) => {
+  const fetchData = async () => {
+    try {
+      const response = await axios.get('/quadros/email');
       setBoards(response.data);
-    });
-  }
+    } catch (error) {
+      console.error('Failed to fetch boards', error);
+    }
+  };
+
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+  const handleUpdate = async () => {
+    await fetchData();
+    handleClose();
+  };
+
   return (
     <>
-      <HeaderBar/>
+      <HeaderBar option='boards' handleOpen={handleOpen} />
       <Container maxWidth="false">
         <Grid container spacing={4}>
           {boards.map((board) => (
@@ -38,7 +45,13 @@ function Boards() {
           ))}
         </Grid>
       </Container>
+      <Modal open={open} onClose={handleClose}>
+        <Box sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', bgcolor: 'background.paper', boxShadow: 24, p: 4 }}>
+          <RegisterBoard handleClose={handleClose} handleUpdate={handleUpdate} />
+        </Box>
+      </Modal>
     </>
   );
 }
+
 export default Boards;
