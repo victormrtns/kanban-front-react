@@ -13,7 +13,7 @@ function RegisterBoard({ handleClose, handleUpdate }) {
       try {
         await axios.post('/quadros', { nome: board });
         handleUpdate();
-        setBoard(''); // Resetar o campo após o sucesso
+        setBoard('');
       } catch (error) {
         console.error('Registration failed', error);
       }

@@ -34,9 +34,9 @@ function Boards() {
       <HeaderBar option='boards' handleOpen={handleOpen} />
       <Container maxWidth="false">
         <Grid container spacing={4}>
-          {boards.map((board, key) => (
-            <Grid item xs={12} sm={6} md={4} lg={3} key={key}>
-              <BoardComponent name={board.nome} />
+          {boards.map((board) => (
+            <Grid item xs={12} sm={6} md={4} lg={3} key={board.id}>
+              <BoardComponent id={board.id} name={board.nome} onUpdate={handleUpdate} />
             </Grid>
           ))}
         </Grid>
