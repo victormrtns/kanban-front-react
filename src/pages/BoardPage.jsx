@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import axios from '../config/axiosConfig';
-import { Container, Grid, Card, CardContent, Typography, Button, Modal, Box } from '@mui/material';
+import { Container, Grid, Typography, Button, Modal, Box } from '@mui/material';
 import HeaderBar from '../components/HeaderBar';
-import RegisterCard from '../components/RegisterCard';
 import CardComponent from '../components/CardComponent';
+import RegisterCard from '../components/RegisterCard';
 
 function BoardPage({ id }) {
   const [board, setBoard] = useState(null);
@@ -35,7 +35,8 @@ function BoardPage({ id }) {
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-  const handleUpdate = async () => {
+
+  const reloadCards = async () => {
     await fetchCards();
     handleClose();
   };
@@ -52,40 +53,37 @@ function BoardPage({ id }) {
 
   cards.forEach((card) => {
     if (card.status === 'todo') {
-      columns.todo.push(<CardComponent key={card.id_card} id={card.id_card} />);
+      columns.todo.push(<CardComponent key={card.id_card} id={card.id_card} reloadCards={reloadCards} />);
     } else if (card.status === 'doing') {
-      columns.doing.push(<CardComponent key={card.id_card} id={card.id_card} />);
+      columns.doing.push(<CardComponent key={card.id_card} id={card.id_card} reloadCards={reloadCards} />);
     } else if (card.status === 'done') {
-      columns.done.push(<CardComponent key={card.id_card} id={card.id_card} />);
+      columns.done.push(<CardComponent key={card.id_card} id={card.id_card} reloadCards={reloadCards} />);
     }
   });
 
   return (
     <div>
       <HeaderBar />
-
       <Container>
         <h1>Detalhes do Board {board.nome}</h1>
         <Button variant="contained" onClick={handleOpen}>
           Add Card
         </Button>
-
-        <Grid container spacing={2} mt={2}>
+        <Grid container spacing={2} mt={3}>
           <Grid item xs={4}>
-            <Typography variant="h6">To Do</Typography>
-            {columns.todo.map((cardComponent) => cardComponent)}
+            <Typography variant="h6" mb={3}>To Do</Typography>
+            {columns.todo}
           </Grid>
           <Grid item xs={4}>
-            <Typography variant="h6">Doing</Typography>
-            {columns.doing.map((cardComponent) => cardComponent)}
+            <Typography variant="h6" mb={3}>Doing</Typography>
+            {columns.doing}
           </Grid>
           <Grid item xs={4}>
-            <Typography variant="h6">Done</Typography>
-            {columns.done.map((cardComponent) => cardComponent)}
+            <Typography variant="h6" mb={3}>Done</Typography>
+            {columns.done}
           </Grid>
         </Grid>
       </Container>
-
       <Modal open={open} onClose={handleClose}>
         <Box
           sx={{
@@ -98,7 +96,7 @@ function BoardPage({ id }) {
             p: 4,
           }}
         >
-          <RegisterCard handleClose={handleClose} handleUpdate={handleUpdate} />
+          <RegisterCard handleClose={handleClose} handleUpdate={reloadCards} boardId={id} />
         </Box>
       </Modal>
     </div>
