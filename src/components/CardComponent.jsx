@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Card, CardContent, Typography } from '@mui/material';
+import { Card, CardContent, Divider, Typography } from '@mui/material';
 import axios from '../config/axiosConfig';
 
 const ItemCard = ({ id }) => {
@@ -21,15 +21,18 @@ const ItemCard = ({ id }) => {
   if (!card) {
     return <div>Loading...</div>;
   }
-
-  // Define a cor de fundo com base na presença de feature.id ou bug.id
-  const backgroundColor = card.feature_id ? '#fff2cc' : card.bug_id ? '#ffcccc' : '#fff';
-
+  
+  const backgroundColor = (card.feature_id === null) ? '#fff2cc' : (card.bug_id===null) ? '#ffcccc' : '#fff';
+  const typeCard = (card.feature_id === null) ? 'Feature' : (card.bug_id===null) ? 'Bug' : '';
   return (
-    <Card variant="outlined" sx={{ backgroundColor }}>
+    <Card variant="outlined" sx={{ backgroundColor,mb:3}}>
       <CardContent>
-        <Typography variant="h5" component="h2">
+        <Typography variant="h4" component="h4">
           {card.nome}
+        </Typography>
+        <Divider/>
+        <Typography variant="overline" display="block" gutterBottom>
+          {typeCard}
         </Typography>
       </CardContent>
     </Card>
