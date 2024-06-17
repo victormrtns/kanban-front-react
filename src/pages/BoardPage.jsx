@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import axios from '../config/axiosConfig';
-import { Container, Grid, Card, CardContent, Typography, Button, Modal, Box, Divider } from '@mui/material';
+import { Container, Grid, Typography, Button, Modal, Box } from '@mui/material';
 import HeaderBar from '../components/HeaderBar';
-import RegisterCard from '../components/RegisterCard';
 import CardComponent from '../components/CardComponent';
+import RegisterCard from '../components/RegisterCard';
 
 function BoardPage({ id }) {
   const [board, setBoard] = useState(null);
@@ -27,7 +27,6 @@ function BoardPage({ id }) {
   const fetchCards = async () => {
     try {
       const response = await axios.get(`/cards/quadro/${id}`);
-      console.log(response.data);
       setCards(response.data);
     } catch (error) {
       console.error('Failed to fetch cards', error);
@@ -36,7 +35,8 @@ function BoardPage({ id }) {
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-  const handleUpdate = async () => {
+
+  const reloadCards = async () => {
     await fetchCards();
     handleClose();
   };
@@ -53,13 +53,11 @@ function BoardPage({ id }) {
 
   cards.forEach((card) => {
     if (card.status === 'todo') {
-      console.log(card.feature_id)
-      console.log(card.bug_id)
-      columns.todo.push(<CardComponent key={card.id_card} id={card.id_card} />);
+      columns.todo.push(<CardComponent key={card.id_card} id={card.id_card} reloadCards={reloadCards} />);
     } else if (card.status === 'doing') {
-      columns.doing.push(<CardComponent key={card.id_card} id={card.id_card} />);
+      columns.doing.push(<CardComponent key={card.id_card} id={card.id_card} reloadCards={reloadCards} />);
     } else if (card.status === 'done') {
-      columns.done.push(<CardComponent key={card.id_card} id={card.id_card} />);
+      columns.done.push(<CardComponent key={card.id_card} id={card.id_card} reloadCards={reloadCards} />);
     }
   });
 
@@ -98,7 +96,7 @@ function BoardPage({ id }) {
             p: 4,
           }}
         >
-          <RegisterCard handleClose={handleClose} handleUpdate={handleUpdate} boardId={id} />
+          <RegisterCard handleClose={handleClose} handleUpdate={reloadCards} boardId={id} />
         </Box>
       </Modal>
     </div>

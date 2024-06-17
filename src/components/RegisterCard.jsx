@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Box, Typography, TextField, Button, InputLabel, MenuItem, Select } from '@mui/material';
 import axios from '../config/axiosConfig';
 
@@ -8,6 +8,17 @@ function RegisterCard({ handleClose, handleUpdate, boardId }) {
   const [status, setStatus] = useState('todo');
   const [tipo, setTipo] = useState('');
   const [error, setError] = useState(false);
+
+  // Carregar dados do localStorage se existirem
+  useEffect(() => {
+    const storedData = JSON.parse(localStorage.getItem('editCardData'));
+    if (storedData) {
+      setNome(storedData.nome);
+      setDescricao(storedData.descricao);
+      setStatus(storedData.status);
+      setTipo(storedData.tipo);
+    }
+  }, []);
 
   const handleChangeStatus = (event) => {
     setStatus(event.target.value);
@@ -26,19 +37,32 @@ function RegisterCard({ handleClose, handleUpdate, boardId }) {
           nome,
           descricao,
           status,
-          type:tipo,
-          quadroId: boardId
+          type: tipo,
+          quadroId: boardId,
         });
         handleUpdate();
-        setNome('');
-        setDescricao('');
-        setTipo('');
+        clearLocalStorage(); // Limpa os dados do localStorage após o envio bem-sucedido
         setError(false);
       } catch (error) {
         console.error('Registration failed', error);
       }
     }
   };
+
+  const clearLocalStorage = () => {
+    localStorage.removeItem('editCardData');
+  };
+
+  const handleCancel = () => {
+    clearLocalStorage(); // Limpa os dados do localStorage ao cancelar
+    handleClose();
+  };
+
+  // Salva os dados no localStorage sempre que houver uma mudança nos campos
+  useEffect(() => {
+    const dataToStore = { nome, descricao, status, tipo };
+    localStorage.setItem('editCardData', JSON.stringify(dataToStore));
+  }, [nome, descricao, status, tipo]);
 
   return (
     <Box component="form" display="flex" flexDirection="column" alignItems="center">
@@ -95,7 +119,7 @@ function RegisterCard({ handleClose, handleUpdate, boardId }) {
       <Button variant="contained" color="primary" sx={{ mt: 2 }} onClick={handleRegister}>
         Add
       </Button>
-      <Button variant="outlined" color="secondary" sx={{ mt: 2 }} onClick={handleClose}>
+      <Button variant="outlined" color="secondary" sx={{ mt: 2 }} onClick={handleCancel}>
         Cancel
       </Button>
     </Box>
