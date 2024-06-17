@@ -3,6 +3,7 @@ import { Card, CardContent, Typography, Button, TextField, Box } from '@mui/mate
 import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import axios from '../config/axiosConfig';
+import { Link, useNavigate } from 'react-router-dom';
 
 export default function BoardComponent({ id, name, onUpdate }) {
   const theme = useTheme();
@@ -59,6 +60,7 @@ export default function BoardComponent({ id, name, onUpdate }) {
           </Box>
         ) : (
           <>
+           <Link to={`/boards/${id}`} style={{ textDecoration: 'none' }}>
             <Typography
               gutterBottom
               variant="h5"
@@ -67,6 +69,7 @@ export default function BoardComponent({ id, name, onUpdate }) {
             >
               {name}
             </Typography>
+           </Link>
             <Button variant="outlined" color="primary" onClick={() => setIsEditing(true)}>
               Edit
             </Button>

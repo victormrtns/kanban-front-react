@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Box, Button, TextField, Modal } from '@mui/material';
+import { Box, Button, TextField, Modal, Typography } from '@mui/material';
 import axios from 'axios';
 import HeaderBar from './HeaderBar';
 import RegisterModal from './RegisterModal';
@@ -21,6 +21,7 @@ function Login() {
   const [open, setOpen] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
   let navigate = useNavigate();
 
   const handleOpen = () => setOpen(true);
@@ -32,18 +33,48 @@ function Login() {
       localStorage.setItem('token', response.data.token);
       navigate('/boards');
     } catch (error) {
+      setError('Login failed. Please check your email and password.');
       console.error('Login failed', error);
     }
   };
 
   return (
     <>
-      <HeaderBar option='default'/>
-      <Box display="flex" flexDirection="column" alignItems="center">
-        <TextField label="Email" variant="outlined" margin="normal" value={email} onChange={(e) => setEmail(e.target.value)} />
-        <TextField label="Password" type="password" variant="outlined" margin="normal" value={password} onChange={(e) => setPassword(e.target.value)} />
-        <Button variant="contained" color="primary" sx={{ mt: 2 }} onClick={handleLogin}>Login</Button>
-        <Button variant="outlined" color="secondary" sx={{ mt: 2 }} onClick={handleOpen}>
+      <Box display="flex" flexDirection="column" alignItems="center" mt={4}>
+        <TextField
+          label="Email"
+          variant="outlined"
+          margin="normal"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
+        <TextField
+          label="Password"
+          type="password"
+          variant="outlined"
+          margin="normal"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
+        {error && (
+          <Typography color="error" mt={2}>
+            {error}
+          </Typography>
+        )}
+        <Button
+          variant="contained"
+          color="primary"
+          sx={{ mt: 2 }}
+          onClick={handleLogin}
+        >
+          Login
+        </Button>
+        <Button
+          variant="outlined"
+          color="secondary"
+          sx={{ mt: 2 }}
+          onClick={handleOpen}
+        >
           Register
         </Button>
         <Modal
